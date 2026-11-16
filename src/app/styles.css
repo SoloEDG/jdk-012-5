@@ -1126,3 +1126,289 @@ textarea {
     margin: 3px 0;
   }
 }
+
+/* ===== 双语无障碍讲解轨道 ===== */
+.audio-player {
+  flex-wrap: wrap;
+  row-gap: 10px;
+  padding-block: 14px;
+}
+.lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #879678;
+}
+.lang-switch .lang {
+  background: transparent;
+  border: 1px solid #4a5640;
+  color: #aab596;
+  font-size: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.lang-switch .lang.active {
+  background: #c4b584;
+  border-color: #c4b584;
+  color: #27301f;
+}
+.skip-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid #576348;
+  color: #b4bf9c;
+  font-size: 10px;
+  padding: 5px 9px;
+  cursor: pointer;
+}
+.skip-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.segment-track {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  order: 3;
+}
+.seg-dot {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  border: 1px solid #4a5640;
+  color: #93a181;
+  background: #2c3826;
+}
+.seg-dot.seg-heard {
+  background: #6f8a5b;
+  border-color: #8fae76;
+  color: #16200f;
+}
+.seg-dot.seg-watched {
+  background: #8a7d5b;
+  border-color: #b0a074;
+  color: #1d180c;
+}
+.seg-dot.seg-skipped {
+  background: transparent;
+  color: #7d876f;
+  text-decoration: line-through;
+}
+.seg-dot.current {
+  outline: 2px solid #e0d4a8;
+  outline-offset: 2px;
+}
+.caption {
+  flex-basis: 100%;
+  max-width: none;
+  margin-left: 0;
+  display: grid;
+  gap: 3px;
+}
+.caption-badge {
+  justify-self: start;
+  background: #5a4a2e;
+  border: 1px solid #a08a55;
+  color: #f0e4c4;
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.caption-text {
+  margin: 2px 0 0;
+  color: #d6ddc9;
+  font-size: 12px;
+}
+.caption-lang,
+.caption-highlight {
+  color: #8fa07e;
+  font-size: 9px;
+}
+.caption-highlight {
+  color: #c9b98a;
+}
+
+/* 作品档案中的语义段落 */
+.segment-list {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+.segment-row {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: 9px;
+  padding: 9px;
+  border: 1px solid #e2ddd0;
+  background: #faf8f2;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.segment-row.active {
+  border-color: #b39a5f;
+  background: #f6efe0;
+}
+.segment-index {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e7e0d0;
+  color: #6d6655;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+}
+.segment-row.heard .segment-index {
+  background: #6f8a5b;
+  color: #fff;
+}
+.segment-row.watched .segment-index {
+  background: #a8946a;
+  color: #fff;
+}
+.segment-row.skipped {
+  opacity: 0.62;
+}
+.segment-row p {
+  margin: 0 0 4px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.segment-row small {
+  display: block;
+  color: #7c8372;
+  font-size: 9px;
+  line-height: 1.6;
+}
+.segment-highlight {
+  color: #a08a55 !important;
+}
+.segment-outcome {
+  font-style: normal;
+  font-size: 9px;
+  white-space: nowrap;
+  align-self: start;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #ece7da;
+  color: #8a8474;
+}
+.segment-outcome.heard {
+  background: #e2eed8;
+  color: #4f6b3d;
+}
+.segment-outcome.watched {
+  background: #f0e6d0;
+  color: #8a7140;
+}
+.segment-outcome.skipped {
+  background: #efece6;
+  color: #9a958a;
+  text-decoration: line-through;
+}
+.listening-summary {
+  font-size: 10px;
+  color: #6f7566;
+  margin: 0 0 12px;
+}
+.stats-note {
+  font-size: 10px;
+  color: #8a8474;
+  margin: 8px 0 0;
+}
+
+/* 导览面板逐站结局 */
+.stop-list {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+.stop-item {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  color: #c3cbb6;
+}
+.stop-item.current .stop-name {
+  color: #f0e4c4;
+  font-weight: 600;
+}
+.stop-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  background: #3a4633;
+  color: #93a181;
+  border: 1px solid #4a5640;
+}
+.stop-dot.heard {
+  background: #6f8a5b;
+  color: #16200f;
+  border-color: #8fae76;
+}
+.stop-dot.watched {
+  background: #a8946a;
+  color: #1d180c;
+}
+.stop-dot.skipped {
+  background: transparent;
+  text-decoration: line-through;
+}
+.stop-outcome {
+  font-style: normal;
+  font-size: 9px;
+  color: #8fa07e;
+}
+.tour-hint {
+  font-size: 10px;
+  color: #9faa8e;
+  margin: 6px 0 10px;
+}
+
+/* 恢复参观条 */
+.resume-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 132px;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(760px, 92vw);
+  background: #f6efe0;
+  border: 1px solid #b39a5f;
+  color: #3a352b;
+  padding: 12px 18px;
+  box-shadow: 0 10px 34px rgba(32, 40, 30, 0.28);
+}
+.resume-bar .resume-text {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.resume-bar .resume-text strong {
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .resume-bar {
+    bottom: 168px;
+  }
+  .segment-track {
+    flex-basis: 100%;
+  }
+}

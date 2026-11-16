@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { loadDocument, saveDocument } from "../../../shared/storage";
 import { artworkById } from "../../../shared/catalog";
+import type { SegmentOutcome } from "../../../shared/types";
+import { recordOutcome } from "../../narration/lib/listening";
+
 export function useCollection() {
   const [document, setDocument] = useState(loadDocument);
   const [storageError, setStorageError] = useState(false);
@@ -33,5 +36,16 @@ export function useCollection() {
         };
       });
     },
+    /** 写入段落收听结局；heard/watched 不被 skipped 降级 */
+    recordOutcome: useCallback(
+      (artworkId: string, segmentId: string, outcome: SegmentOutcome) => {
+        if (!artworkById(artworkId)) return;
+        setDocument((d) => ({
+          ...d,
+          segments: recordOutcome(d.segments, artworkId, segmentId, outcome),
+        }));
+      },
+      [],
+    ),
   };
 }

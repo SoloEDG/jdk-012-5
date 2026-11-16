@@ -1,19 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import type { Point } from "../../../shared/types";
-import { buildScene, disposeScene } from "../lib/buildScene";
+import {
+  applyNarrationHighlight,
+  buildScene,
+  disposeScene,
+} from "../lib/buildScene";
 export function Viewport({
   position,
   yaw,
   onSelect,
+  highlightId,
 }: {
   position: React.RefObject<Point>;
   yaw: React.RefObject<number>;
   onSelect: (id: string) => void;
+  highlightId?: string | null;
 }) {
   const root = useRef<HTMLDivElement>(null);
   const select = useRef(onSelect);
   select.current = onSelect;
+  const highlight = useRef(highlightId ?? null);
+  highlight.current = highlightId ?? null;
   const [error, setError] = useState("");
   useEffect(() => {
     const el = root.current!;
@@ -27,7 +35,7 @@ export function Viewport({
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     el.appendChild(renderer.domElement);
-    const { scene, frames, sculpture } = buildScene();
+    const { scene, frames, sculpture, frameBorders } = buildScene();
     const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 80);
     const resize = () => {
       renderer.setSize(el.clientWidth, el.clientHeight);
@@ -78,6 +86,7 @@ export function Viewport({
       camera.position.set(position.current.x, 1.7, position.current.z);
       camera.rotation.set(-0.03, yaw.current, 0);
       sculpture.rotation.y = now * 0.00015;
+      applyNarrationHighlight(frameBorders, highlight.current, now);
       renderer.render(scene, camera);
       frame = requestAnimationFrame(tick);
     };

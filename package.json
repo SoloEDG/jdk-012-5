@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "typecheck": "tsc --noEmit",
+    "test:logic": "node --experimental-strip-types --import ./scripts/ts-register.mjs scripts/test-narration.ts && node --experimental-strip-types --import ./scripts/ts-register.mjs scripts/test-narration-machine.ts",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0"
   },

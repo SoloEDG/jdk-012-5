@@ -13,7 +13,7 @@ import {
 import { Viewport, Map } from "../features/space";
 import { ArtworkList, ArtworkDetail } from "../features/catalog";
 import { TourPanel } from "../features/tours";
-import { AudioPlayer } from "../features/narration";
+import { AudioPlayer, ResumeBar, retryVoicePack } from "../features/narration";
 import { CollectionPanel } from "../features/collection";
 import { artworks, artworkById } from "../shared/catalog";
 import { useGallery } from "./useGallery";
@@ -23,7 +23,10 @@ export default function App() {
   const [mapOpen, setMapOpen] = useState(false);
   const [help, setHelp] = useState(false);
   const [side, setSide] = useState("works");
+  const [resumeDismissed, setResumeDismissed] = useState(false);
   const a = artworkById(g.catalog.active);
+  const snapshot = resumeDismissed ? null : g.snapshot();
+  const highlightId = g.narration.state.artworkId;
   return (
     <div className="app">
       <header>
@@ -142,6 +145,7 @@ export default function App() {
               position={g.walker.positionRef}
               yaw={g.walker.yaw}
               onSelect={g.go}
+              highlightId={highlightId}
             />
             <div className="scene-top">
               <span>
@@ -265,6 +269,12 @@ export default function App() {
               saved={g.collection.document.favorites.includes(
                 g.catalog.active || "",
               )}
+              records={g.collection.document.segments}
+              activeSegmentId={
+                g.narration.state.artworkId === g.catalog.active
+                  ? g.narration.segment?.id ?? null
+                  : null
+              }
               onFavorite={() => {
                 if (g.catalog.active) g.collection.toggle(g.catalog.active);
               }}
@@ -292,13 +302,33 @@ export default function App() {
           浏览器存储已满，本次更改暂未保存，请下载回顾。
         </div>
       )}
+      {snapshot && (
+        <ResumeBar
+          snapshot={snapshot}
+          records={g.collection.document.segments}
+          onResume={() => {
+            g.restoreSnapshot(snapshot);
+            setResumeDismissed(true);
+          }}
+          onDismiss={() => {
+            g.dismissSnapshot();
+            setResumeDismissed(true);
+          }}
+        />
+      )}
       <AudioPlayer
-        state={g.narration.state}
-        caption={g.narration.caption}
-        supported={g.narration.supported}
+        narration={g.narration}
+        records={
+          g.narration.state.artworkId
+            ? g.collection.document.segments[g.narration.state.artworkId]
+            : undefined
+        }
         onToggle={g.narration.toggle}
         onSeek={g.narration.seek}
-        onRate={g.narration.rate}
+        onRate={g.narration.setRate}
+        onLang={g.narration.switchLang}
+        onSkip={g.narration.skipArtwork}
+        onRetryVoice={() => retryVoicePack(g.narration.state.lang)}
       />
       {(mapOpen || help) && (
         <div
@@ -334,10 +364,10 @@ export default function App() {
                   点击画中的作品或左侧列表，自动前往。靠近作品后，右侧切换介绍。
                 </p>
                 <p>
-                  主题导览会带你依次前往作品并开始讲解。收藏喜欢的作品，在“我的收藏”写下感想并下载参观回顾。
+                  主题导览会带你依次前往作品并开始讲解，仅在讲解自然播完后自动进入下一站；手动跳过的段落会如实标记为“已跳过”。
                 </p>
                 <p>
-                  讲解由设备的中文语音合成播放；没有中文语音时仍可阅读同步字幕。
+                  讲解按语义段落对齐中文原声与英文译制，可随时切换语言并保留当前段落。英文语音包下载期间，缺失译文或语音的段落会自动回退为原声并显示徽标；设备无语音时仅展示字幕，记为“只看过”。
                 </p>
               </>
             ) : (

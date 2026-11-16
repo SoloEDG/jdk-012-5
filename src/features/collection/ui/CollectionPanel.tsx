@@ -21,15 +21,19 @@ export function CollectionPanel({
       <h2>把共鸣，留在这里。</h2>
       <div className="stats">
         <span>
-          <strong>{stats.seen}</strong>已观看
+          <strong>{stats.heard}</strong>听过讲解
+        </span>
+        <span>
+          <strong>{stats.watchedOnly}</strong>只看过
         </span>
         <span>
           <strong>{stats.saved}</strong>已收藏
         </span>
-        <span>
-          <strong>{Math.floor(stats.seconds / 60)}′</strong>停留时长
-        </span>
       </div>
+      <p className="stats-note">
+        观看 {stats.seen} 件 · 跳过 {stats.skipped} 段 · 停留{" "}
+        {Math.floor(stats.seconds / 60)} 分钟
+      </p>
       {document.favorites.length === 0 ? (
         <div className="empty">
           <Heart size={28} />

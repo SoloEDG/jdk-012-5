@@ -1,7 +1,12 @@
 import { Route, ArrowRight, Pause, Play, X } from "lucide-react";
 import { routes, artworkById } from "../../../shared/catalog";
 import type { TourState } from "../../../shared/types";
-import { tourProgress, tourRoute } from "../lib/routeProgress";
+import {
+  tourProgress,
+  tourRoute,
+  stopOutcomeLabel,
+} from "../lib/routeProgress";
+
 export function TourPanel({
   state,
   onStart,
@@ -30,15 +35,43 @@ export function TourPanel({
           <span className="eyebrow">
             正在探索 ·{" "}
             {state.phase === "done"
-              ? "已完成"
+              ? "已结束"
               : `${state.step + 1} / ${current.stops.length}`}
           </span>
           <h3>{current.name}</h3>
           <progress value={tourProgress(state)} max="1" />
-          <p>
+          <ol className="stop-list">
+            {current.stops.map((stopId, i) => {
+              const outcome = state.stopOutcomes[i];
+              const isCurrent = i === state.step && state.phase !== "done";
+              return (
+                <li
+                  key={stopId}
+                  className={
+                    "stop-item" +
+                    (isCurrent ? " current" : "") +
+                    (outcome ? " " + outcome : "")
+                  }
+                >
+                  <span className={"stop-dot " + (outcome || "pending")}>
+                    {i + 1}
+                  </span>
+                  <span className="stop-name">
+                    {artworkById(stopId)?.title}
+                  </span>
+                  <em className="stop-outcome">{stopOutcomeLabel(outcome)}</em>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="tour-hint">
             {state.phase === "done"
-              ? "这段旅程已完成，收藏你的所见。"
-              : `${state.phase === "walking" ? "正在前往" : state.phase === "paused" ? "导览已暂停" : "正在讲解"} · ${artworkById(current.stops[state.step])?.title}`}
+              ? "导览结束：跳过的站点不计入完整收听。"
+              : state.phase === "walking"
+                ? `正在前往 · ${artworkById(current.stops[state.step])?.title}`
+                : state.phase === "paused"
+                  ? "导览已暂停"
+                  : `正在讲解 · ${artworkById(current.stops[state.step])?.title}`}
           </p>
           <div className="tour-controls">
             {state.phase !== "done" && (
@@ -52,7 +85,7 @@ export function TourPanel({
                   {state.phase === "paused" ? "继续" : "暂停"}
                 </button>
                 <button onClick={onNext}>
-                  下一站
+                  手动下一站
                   <ArrowRight size={14} />
                 </button>
               </>
@@ -74,7 +107,7 @@ export function TourPanel({
             </span>
             <h3>
               {r.name}
-              <ArrowUpRightIcon />
+              <span className="round-arrow">↗</span>
             </h3>
             <p>{r.subtitle}</p>
           </button>
@@ -82,7 +115,4 @@ export function TourPanel({
       )}
     </section>
   );
-}
-function ArrowUpRightIcon() {
-  return <span className="round-arrow">↗</span>;
 }
